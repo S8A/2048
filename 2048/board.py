@@ -8,13 +8,29 @@ class GameBoard:
         self.score = 0
         self.size = size
     
+    def shift_left(self):
+        """Shifts the board leftward."""
+        self._shift(False, False)
+    
+    def shift_right(self):
+        """Shifts the board rightward."""
+        self._shift(False, True)
+    
+    def shift_up(self):
+        """Shifts the board upward."""
+        self._shift(True, False)
+    
+    def shift_down(self):
+        """Shifts the board downward."""
+        self._shift(True, True)
+    
     def _shift(self, vertical: bool, reverse: bool):
         """Shifts the board in the given direction and handles the cells.
 
         Args:
             vertical: If true, shifts columns instead of rows.
             reverse: If true, rows are shifted right-to-left or columns
-                are shifted upwards.
+                are shifted upward.
         """
         # Make a copy of the board
         new_board = self.board.copy()
