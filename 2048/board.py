@@ -1,12 +1,21 @@
+import random as rd
 import numpy as np
 
 class GameBoard:
     """Model/controller of the game board state and actions."""
 
-    def __init__(self, size=4):
+    def __init__(self, size=4, win=2048):
         self.board = np.zeros((size, size))
         self.score = 0
         self.size = size
+        self.win = win
+        self._add_new_cell()
+    
+    def is_full():
+        return self.board.min() > 0
+    
+    def won():
+        return self.board.max() == self.win
     
     def shift_left(self):
         """Shifts the board leftward."""
@@ -50,6 +59,8 @@ class GameBoard:
             new_board = new_board.transpose()
         # Replace board with updated one
         self.board = new_board.copy()
+        # Add a new cell in a random spot
+        self._add_new_cell()
     
     def _compress(self, row):
         """Removes blank cells from the given row."""
@@ -101,6 +112,21 @@ class GameBoard:
             # Add blank cells at the end of the row
             row.extend(blanks)
             return np.array(row)
+    
+    def _add_new_cell(self):
+        """Adds a 2 or 4 in a random blank cell of the board."""
+        # If the board is empty, don't try
+        if self.is_full():
+            break
+        # Repeat the process until an empty spot is found
+        while True:
+            # Generate a random position
+            row, col = rd.randrange(self.size), rd.randrange(self.size)
+            # If the cell in that position is empty
+            if self.board[row][col] == 0:
+                # Add a random 2 or 4 there
+                self.board[row][col] = rd.choice([2, 4])
+                break
 
 
 # Run tests if executed as script
