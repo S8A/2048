@@ -12,6 +12,7 @@ class GameBoard:
         self.score = 0
         self.previous_score = 0
         self.moves = 0
+        self.can_undo = False
         self.test_mode = test
         self._add_new_cell()
     
@@ -26,6 +27,14 @@ class GameBoard:
     def lost(self):
         """Determines if the game has been lost."""
         return not self.won() and self.is_full() and self._no_moves_left()
+
+    def undo(self):
+        """Returns the game to its previous state, if possible."""
+        if self.can_undo:
+            self.board = self.previous_board.copy()
+            self.score = self.previous_score + 0
+            self.moves -= 1
+            self.can_undo = False
     
     def shift_left(self):
         """Shifts the board leftward."""
@@ -83,6 +92,8 @@ class GameBoard:
             self._add_new_cell()
             # Increase move count
             self.moves += 1
+            # Enable undo action
+            self.can_undo = True
     
     def _compress(self, row):
         """Removes blank cells from the given row."""
