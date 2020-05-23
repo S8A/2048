@@ -1,9 +1,10 @@
 import argparse
+from . import cli
 
 
 def main(args):
-    # TODO: Actual game
-    print(f'{args["win"]} game: {args["size"]}x{args["size"]} board.')
+    # Run the main function of the CLI game
+    cli.main(args['size'], args['win'])
 
 
 if __name__ == '__main__':
