@@ -5,16 +5,16 @@ class GameBoard:
     """Model/controller of the game board state and actions."""
 
     def __init__(self, size=4, win=2048):
-        self.board = np.zeros((size, size))
+        self.board = np.zeros((size, size), dtype=np.int)
         self.score = 0
         self.size = size
         self.win = win
         self._add_new_cell()
     
-    def is_full():
+    def is_full(self):
         return self.board.min() > 0
     
-    def won():
+    def won(self):
         return self.board.max() == self.win
     
     def shift_left(self):
@@ -117,7 +117,7 @@ class GameBoard:
         """Adds a 2 or 4 in a random blank cell of the board."""
         # If the board is empty, don't try
         if self.is_full():
-            break
+            return
         # Repeat the process until an empty spot is found
         while True:
             # Generate a random position
