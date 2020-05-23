@@ -38,11 +38,13 @@ class GameBoard:
             # Convert the board to a column vector
             new_board = new_board.transpose()
         # For each row/column
-        for row in new_board:
+        i = 0
+        while i < self.size:
             # Compress, reduce and fill the row
-            row = self._fill(
-                    self._reduce(self._compress(row), reverse=reverse),
-                    reverse=reverse)
+            new_board[i] = self._fill(
+                self._reduce(self._compress(new_board[i]), reverse=reverse),
+                reverse=reverse)
+            i += 1
         if vertical:
             # Convert the new board to a row vector again
             new_board = new_board.transpose()
@@ -66,12 +68,8 @@ class GameBoard:
             # Iterate over each pair of items
             i = 0
             while i < len(row):
-                # If this is the last cell
-                if i == len(row) - 1:
-                    # There's nothing left to combine
-                    reduced.append(row[i])
                 # If the current item is equal to the next one
-                elif row[i] == row[i + 1]:
+                if i < len(row) - 1 and row[i] == row[i + 1]:
                     # Sum the cells (equivalent to doubling the current one)
                     cell_sum = 2 * row[i]
                     # Add the resulting number cell to the list
@@ -80,7 +78,8 @@ class GameBoard:
                     self.score += cell_sum
                     # Skip two spaces to the next cell to reduce
                     i += 2
-                # Otherwise, the cells can't be combined
+                # Otherwise, there is no cell next to the current one,
+                # or the cells are different (can't be combined)
                 else:
                     # Add the current cell to the list
                     reduced.append(row[i])
@@ -124,12 +123,14 @@ if __name__ == '__main__':
     boards[2].shift_up()
     boards[3].shift_down()
     # Compare resulting boards
-    assert boards[0].board == np.array(board0_l)
-    assert boards[1].board == np.array(board0_r)
-    assert boards[2].board == np.array(board0_u)
-    assert boards[3].board == np.array(board0_d)
+    assert np.array_equal(boards[0].board, np.array(board0_l))
+    assert np.array_equal(boards[1].board, np.array(board0_r))
+    assert np.array_equal(boards[2].board, np.array(board0_u))
+    assert np.array_equal(boards[3].board, np.array(board0_d))
     # Compare resulting scores
     assert boards[0].score == 8
     assert boards[1].score == 8
     assert boards[2].score == 4
     assert boards[3].score == 4
+    # Finish
+    print('All tests passed.')
