@@ -4,11 +4,12 @@ from .board import GameBoard
 
 def main(size, win):
     game = GameBoard(size, win)
-    shifts = {'l': game.shift_left,
-              'r': game.shift_right,
-              'u': game.shift_up,
-              'd': game.shift_down,
-              'exit': None}
+    actions = {'l': game.shift_left,
+               'r': game.shift_right,
+               'u': game.shift_up,
+               'd': game.shift_down,
+               'undo': game.undo,
+               'exit': None}
     stop = False
     while not stop:
         print_gameboard(game)
@@ -19,11 +20,11 @@ def main(size, win):
             print('You lost. Try again.')
             stop = True
         else:
-            shift = input_shift(shifts)
-            if not shift:
+            action = input_action(actions)
+            if not action:
                 stop = True
             else:
-                shift()
+                action()
             print()
 
 
@@ -45,13 +46,14 @@ def print_gameboard(gb: GameBoard):
     print()
 
 
-def input_shift(shifts):
+def input_action(actions):
     while True:
-        user_input = input('Shift board (l/r/u/d): ').strip().lower()
-        if user_input in shifts.keys():
-            return shifts[user_input]
+        user_input = input('Shift board (l/r/u/d) or do action (undo/exit): ')
+        user_input = user_input.strip().lower()
+        if user_input in actions.keys():
+            return actions[user_input]
         else:
-            print('ERROR: Invalid shift. Try again.')
+            print('ERROR: Invalid action. Try again.')
 
 
 def format_score(score):
