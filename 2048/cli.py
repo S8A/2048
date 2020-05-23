@@ -8,20 +8,29 @@ def main(size, win):
               'r': game.shift_right,
               'u': game.shift_up,
               'd': game.shift_down,
-              'exit': sys.exit}
-    while True:
+              'exit': None}
+    stop = False
+    while not stop:
         print_gameboard(game)
         if game.won():
             print('You won!')
-            shifts['exit']()
+            stop = True
+        elif game.lost():
+            print('You lost. Try again.')
+            stop = True
         else:
             shift = input_shift(shifts)
-            shift()
+            if not shift:
+                stop = True
+            else:
+                shift()
             print()
 
 
 def print_gameboard(gb: GameBoard):
-    print(f'{gb.win} GAME: {format_score(gb.score)} ::..')
+    print(f'..:: {gb.win} GAME ::..')
+    print(f'Score: {format_score(gb.score)}')
+    print(f'Moves: {gb.moves}')
     print()
     print('+'.join(['-'*6 for i in range(4)]))
     for row in gb.board:
