@@ -25,7 +25,7 @@ class GameBoard:
     
     def lost(self):
         """Determines if the game has been lost."""
-        return self.is_full() and self._no_moves_left()
+        return not self.won() and self.is_full() and self._no_moves_left()
     
     def shift_left(self):
         """Shifts the board leftward."""
@@ -152,65 +152,90 @@ class GameBoard:
     
     def _no_moves_left(self):
         """Determines if the board doesn't have any possible move."""
+        row = 0
+        col = 0
+        # Go through each cell
+        for row in range(self.size):
+            for col in range(self.size):
+                # Current cell number
+                current = self.board[row][col]
+                # Check if any of the adjacent cells are
+                # equal to the current one
+                left = (col != 0 and current == self.board[row][col - 1])
+                right = (col != self.size - 1
+                        and current == self.board[row][col + 1])
+                up = (row != 0 and current == self.board[row - 1][col])
+                down = (row != self.size - 1
+                        and current == self.board[row + 1][col])
+                # If so, there are moves to make
+                if left or right or up or down:
+                    return False
+        # No moves were found
         return True
 
 
 # Run tests if executed as script
 if __name__ == '__main__':
     # Example board layouts
-    board0 = [[0, 2, 0, 2],
-              [4, 0, 2, 0],
-              [2, 2, 4, 0],
-              [0, 0, 8, 0]]
-    board0_l = [[4, 0, 0, 0],
-                [4, 2, 0, 0],
-                [4, 4, 0, 0],
-                [8, 0, 0, 0]]
-    board0_r = [[0, 0, 0, 4],
-                [0, 0, 4, 2],
-                [0, 0, 4, 4],
-                [0, 0, 0, 8]]
-    board0_u = [[4, 4, 2, 2],
-                [2, 0, 4, 0],
-                [0, 0, 8, 0],
-                [0, 0, 0, 0]]
-    board0_d = [[0, 0, 0, 0],
-                [0, 0, 2, 0],
-                [4, 0, 4, 0],
-                [2, 4, 8, 2]]
-    board1 = [[2, 8, 64, 8],
-              [4, 256, 128, 2],
-              [128, 32, 16, 2],
-              [2, 2, 16, 2]]
-    board1_l0 = [[2, 8, 64, 8],
-                 [4, 256, 128, 2],
-                 [128, 32, 16, 2],
-                 [4, 16, 2, 2]]
-    board1_l1 = [[2, 8, 64, 8],
-                 [4, 256, 128, 2],
-                 [128, 32, 16, 2],
-                 [4, 16, 2, 4]]
-    board1_r0 = [[2, 8, 64, 8],
-                 [4, 256, 128, 2],
-                 [128, 32, 16, 2],
-                 [2, 4, 16, 2]]
-    board1_r1 = [[2, 8, 64, 8],
-                 [4, 256, 128, 2],
-                 [128, 32, 16, 2],
-                 [4, 4, 16, 2]]
+    board0 = np.array([[0, 2, 0, 2],
+                       [4, 0, 2, 0],
+                       [2, 2, 4, 0],
+                       [0, 0, 8, 0]])
+    board0_l = np.array([[4, 0, 0, 0],
+                         [4, 2, 0, 0],
+                         [4, 4, 0, 0],
+                         [8, 0, 0, 0]])
+    board0_r = np.array([[0, 0, 0, 4],
+                         [0, 0, 4, 2],
+                         [0, 0, 4, 4],
+                         [0, 0, 0, 8]])
+    board0_u = np.array([[4, 4, 2, 2],
+                         [2, 0, 4, 0],
+                         [0, 0, 8, 0],
+                         [0, 0, 0, 0]])
+    board0_d = np.array([[0, 0, 0, 0],
+                         [0, 0, 2, 0],
+                         [4, 0, 4, 0],
+                         [2, 4, 8, 2]])
+    board1 = np.array([[2, 8, 64, 8],
+                       [4, 256, 128, 2],
+                       [128, 32, 16, 2],
+                       [2, 2, 16, 2]])
+    board1_l0 = np.array([[2, 8, 64, 8],
+                          [4, 256, 128, 2],
+                          [128, 32, 16, 2],
+                          [4, 16, 2, 2]])
+    board1_l1 = np.array([[2, 8, 64, 8],
+                          [4, 256, 128, 2],
+                          [128, 32, 16, 2],
+                          [4, 16, 2, 4]])
+    board1_r0 = np.array([[2, 8, 64, 8],
+                          [4, 256, 128, 2],
+                          [128, 32, 16, 2],
+                          [2, 4, 16, 2]])
+    board1_r1 = np.array([[2, 8, 64, 8],
+                          [4, 256, 128, 2],
+                          [128, 32, 16, 2],
+                          [4, 4, 16, 2]])
+    board2 = np.fromfunction(lambda x, y: 2**(x+2*y+1), (4, 4), dtype=np.int)
+    board3 = np.fromfunction(lambda x, y: 2**(2*x+y+2), (4, 4), dtype=np.int)
     # Create game boards
     boards = []
     for i in range(6):
         if i < 4:
             gb = GameBoard(test=True)
-            gb.board = np.array(board0)
+            gb.board = board0.copy()
             boards.append(gb)
         else:
             gb = GameBoard()
-            gb.board = np.array(board1)
+            gb.board = board1.copy()
             gb.moves = 60
             gb.score = 3556
             boards.append(gb)
+    boards.append(GameBoard())
+    boards[6].board = board2.copy()
+    boards.append(GameBoard())
+    boards[7].board = board3.copy()
     # Make shifts
     boards[0].shift_left()
     boards[1].shift_right()
@@ -219,14 +244,14 @@ if __name__ == '__main__':
     boards[4].shift_left()
     boards[5].shift_right()
     # Compare resulting boards
-    assert np.array_equal(boards[0].board, np.array(board0_l))
-    assert np.array_equal(boards[1].board, np.array(board0_r))
-    assert np.array_equal(boards[2].board, np.array(board0_u))
-    assert np.array_equal(boards[3].board, np.array(board0_d))
-    assert (np.array_equal(boards[4].board, np.array(board1_l0))
-            or np.array_equal(boards[4].board, np.array(board1_l1)))
-    assert (np.array_equal(boards[5].board, np.array(board1_r0))
-            or np.array_equal(boards[5].board, np.array(board1_r1)))
+    assert np.array_equal(boards[0].board, board0_l)
+    assert np.array_equal(boards[1].board, board0_r)
+    assert np.array_equal(boards[2].board, board0_u)
+    assert np.array_equal(boards[3].board, board0_d)
+    assert (np.array_equal(boards[4].board, board1_l0)
+            or np.array_equal(boards[4].board, board1_l1))
+    assert (np.array_equal(boards[5].board, board1_r0)
+            or np.array_equal(boards[5].board, board1_r1))
     # Compare resulting scores
     expected_scores = [8, 8, 4, 4, 3560, 3560]
     for i in range(6):
@@ -238,14 +263,24 @@ if __name__ == '__main__':
     # Check if previous states match original
     for i in range(6):
         if i < 4:
-            assert np.array_equal(boards[i].previous_board, np.array(board0))
+            assert np.array_equal(boards[i].previous_board, board0)
         else:
-            assert np.array_equal(boards[i].previous_board, np.array(board1))
+            assert np.array_equal(boards[i].previous_board, board1)
     # Check if previous scores match original
     for i in range(6):
         if i < 4:
             assert boards[i].previous_score == 0
         else:
             assert boards[i].previous_score == 3556
+    # Test win/loss detection
+    for i in range(8):
+        if i != 6:
+            assert not boards[i].lost()
+        else:
+            assert boards[i].lost()
+        if i != 7:
+            assert not boards[i].won()
+        else:
+            assert boards[i].won()
     # Finish
     print('All tests passed.')
