@@ -102,3 +102,34 @@ class GameBoard:
             # Add blank cells at the end of the row
             row.extend(blanks)
             return np.array(row)
+
+
+# Run tests if executed as script
+if __name__ == '__main__':
+    # Example board layouts
+    board0 = [[0, 2, 0, 2], [4, 0, 2, 0], [2, 2, 4, 0], [0, 0, 8, 0]]
+    board0_l = [[4, 0, 0, 0], [4, 2, 0, 0], [4, 4, 0, 0], [8, 0, 0, 0]]
+    board0_r = [[0, 0, 0, 4], [0, 0, 4, 2], [0, 0, 4, 4], [0, 0, 0, 8]]
+    board0_u = [[4, 4, 2, 2], [2, 0, 4, 0], [0, 0, 8, 0], [0, 0, 0, 0]]
+    board0_d = [[0, 0, 0, 0], [0, 0, 2, 0], [4, 0, 4, 0], [2, 4, 8, 2]]
+    # Create game boards
+    boards = []
+    for i in range(4):
+        gb = GameBoard()
+        gb.board = np.array(board0)
+        boards.append(gb)
+    # Make shifts
+    boards[0].shift_left()
+    boards[1].shift_right()
+    boards[2].shift_up()
+    boards[3].shift_down()
+    # Compare resulting boards
+    assert boards[0].board == np.array(board0_l)
+    assert boards[1].board == np.array(board0_r)
+    assert boards[2].board == np.array(board0_u)
+    assert boards[3].board == np.array(board0_d)
+    # Compare resulting scores
+    assert boards[0].score == 8
+    assert boards[1].score == 8
+    assert boards[2].score == 4
+    assert boards[3].score == 4
