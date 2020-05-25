@@ -33,7 +33,7 @@ def print_gameboard(gb: GameBoard):
     print(f'Score: {format_score(gb.score)}')
     print(f'Moves: {gb.moves}')
     print()
-    print('+'.join(['-'*6 for i in range(4)]))
+    print('+'.join(['-'*6 for i in range(gb.size)]))
     for row in gb.board:
         items = []
         for cell in row:
@@ -42,7 +42,7 @@ def print_gameboard(gb: GameBoard):
             else:
                 items.append(f' {cell :<4} ')
         print('|'.join(items))
-        print('+'.join(['-'*6 for i in range(4)]))
+        print('+'.join(['-'*6 for i in range(gb.size)]))
     print()
 
 
