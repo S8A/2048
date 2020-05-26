@@ -26,8 +26,8 @@ COLORS = {
              2048: (237, 194, 46)}
 }
 
-BLOCK_SIZE = 100
 SEPARATOR_SIZE = 20
+BLOCK_SIZE = 5 * SEPARATOR_SIZE
 
 
 class GameApp:
@@ -36,8 +36,8 @@ class GameApp:
     def __init__(self, size=4, win=2048):
         self.game = GameBoard(size, win)
         self._running = True
-        self.width = BLOCK_SIZE * (size + 1)
-        self.height = BLOCK_SIZE * (size + 2)
+        self.width = BLOCK_SIZE * size + SEPARATOR_SIZE * (size + 1)
+        self.height = (BLOCK_SIZE + SEPARATOR_SIZE) * (size + 1)
 
     def init_game(self):
         """Initializes game loop and screen."""
