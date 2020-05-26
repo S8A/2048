@@ -127,7 +127,7 @@ class GameApp:
 
         # Render the score counter
         score_text = self._create_text(
-            f'Score: {self.game.score}', 16, 'brown')
+            f'Score: {self.game.get_score()}', 16, 'brown')
         score_text_rect = score_text.get_rect(center=score_rect.center)
 
         # Blit text elements onto the screen

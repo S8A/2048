@@ -30,7 +30,7 @@ def main(size, win):
 
 def print_gameboard(gb: GameBoard):
     print(f'..:: {gb.win} GAME ::..')
-    print(f'Score: {format_score(gb.score)}')
+    print(f'Score: {gb.get_score()}')
     print(f'Moves: {gb.moves}')
     print()
     print('+'.join(['-'*6 for i in range(gb.size)]))
@@ -54,12 +54,3 @@ def input_action(actions):
             return actions[user_input]
         else:
             print('ERROR: Invalid action. Try again.')
-
-
-def format_score(score):
-    if score >= 10**6:
-        return f'{round(score / 10**6, 1)}M pts'
-    elif score >= 10**3:
-        return f'{round(score / 10**3, 1)}k pts'
-    else:
-        return f'{score} pts'

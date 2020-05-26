@@ -16,6 +16,15 @@ class GameBoard:
         self.test_mode = test
         self._add_new_cell()
     
+    def get_score(self):
+        """Returns score in human-friendly format."""
+        if self.score >= 10**6:
+            return f'{round(self.score / 10**6, 1)}M pts'
+        elif self.score >= 10**3:
+            return f'{round(self.score / 10**3, 1)}k pts'
+        else:
+            return f'{self.score} pts'
+        
     def is_full(self):
         """Determines if the board is full."""
         return self.board.min() > 0
