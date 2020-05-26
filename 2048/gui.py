@@ -7,20 +7,22 @@ from .board import GameBoard
 COLORS = {
     'black': (0, 0, 0),
     'brown': (119, 110, 101),
-    'white0': (250, 248, 239),
-    'white1': (249, 246, 242),
+    'beige0': (187, 173, 160),
+    'beige1': (205, 193, 180),
+    'white0': (249, 246, 242),
+    'white1': (250, 248, 239),
     'empty': (205, 193, 180),
-    'bg2': (238, 228, 218),
-    'bg4': (237, 224, 200),
-    'bg8': (242, 177, 121),
-    'bg16': (245, 149, 99),
-    'bg32': (246, 124, 95),
-    'bg64': (246, 94, 59),
-    'bg128': (237, 207, 114),
-    'bg256': (237, 204, 97),
-    'bg512': (237, 200, 80),
-    'bg1024': (237, 197, 63),
-    'bg2048': (237, 194, 46)
+    'cell': {2: (238, 228, 218),
+             4: (237, 224, 200),
+             8: (242, 177, 121),
+             16: (245, 149, 99),
+             32: (246, 124, 95),
+             64: (246, 94, 59),
+             128: (237, 207, 114),
+             256: (237, 204, 97),
+             512: (237, 200, 80),
+             1024: (237, 197, 63),
+             2048: (237, 194, 46)}
 }
 
 BLOCK_SIZE = 100
@@ -78,7 +80,6 @@ class GameApp:
     
     def _render_header(self):
         """Renders the header of the game."""
-
         # Dimensions of the 2048 title
         title_width = (BLOCK_SIZE * (self.game.size - 2)
                        + SEPARATOR_SIZE * (self.game.size - 3))
@@ -117,7 +118,42 @@ class GameApp:
 
     def _render_board(self):
         """Renders the game board."""
-        pass
+        # Game board rectangle
+        board_rect = pg.Rect((0, BLOCK_SIZE),
+                             (self.width, self.width))
+        pg.draw.rect(self.screen, COLORS['beige0'], board_rect)
+        
+        # Iterate over cells
+        row = 0
+        while row < self.game.size:
+            col = 0
+            while col < self.game.size:
+                cell = self.game.board[row][col]
+                # Calculate position
+                left_margin = col * BLOCK_SIZE + (col + 1) * SEPARATOR_SIZE
+                top_margin = (board_rect.top
+                              + row * BLOCK_SIZE
+                              + (row + 1) * SEPARATOR_SIZE)
+                # Cell rectangle
+                cell_rect = pg.Rect((left_margin, top_margin),
+                                    (BLOCK_SIZE, BLOCK_SIZE))
+                # Set cell color
+                bg = COLORS['beige1']
+                if cell in COLORS['cell'].keys():
+                    bg = COLORS['cell'][cell]
+                elif cell > 2048:
+                    bg = COLORS['cell'][2048]
+                # Draw cell
+                pg.draw.rect(self.screen, bg, cell_rect)
+                # Cell number
+                if cell != 0:
+                    color = 'brown' if cell < 8 else 'white0'
+                    number = self._create_text(str(cell), 28, color, bold=True)
+                    number_rect = number.get_rect(center=cell_rect.center)
+                    self.screen.blit(number, number_rect)                
+                col += 1
+            row += 1
+
 
     def _create_text(self, text, size, color, bold=False, italic=False):
         """Creates a text object with the given properties."""
