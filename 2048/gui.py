@@ -74,13 +74,19 @@ class GameApp:
                 self.on_event(event)
 
             # Fill background
-            self.screen.fill(COLORS['white0'])
+            self.screen.fill(COLORS['white1'])
             
             # Render header
             self._render_header()
 
             # Render board
             self._render_board()
+
+            # Render win/loss
+            if self.game.won():
+                self._render_won()
+            elif self.game.lost():
+                self._render_lost()
 
             # Refresh screen
             pg.display.flip()
@@ -116,7 +122,7 @@ class GameApp:
 
         # Render the move counter
         moves_text = self._create_text(
-            f'Moves: {self.game.score}', 16, 'brown')
+            f'Moves: {self.game.moves}', 16, 'brown')
         moves_text_rect = moves_text.get_rect(center=moves_rect.center)
 
         # Render the score counter
@@ -167,6 +173,27 @@ class GameApp:
                 col += 1
             row += 1
 
+    def _render_won(self):
+        """Renders the win screen."""
+        self._render_overlay_text('You won!', 2048, 'white0')
+
+    def _render_lost(self):
+        """Renders the loss screen."""
+        self._render_overlay_text('Game over!', 2, 'brown')
+    
+    def _render_overlay_text(self, text, bg_color_cell, text_color):
+        """Renders an overlay with a big text message."""
+        # Overlay
+        overlay = pg.Surface((self.width, self.width))
+        overlay.set_alpha(192)
+        overlay.fill(COLORS['cell'][bg_color_cell])
+        self.screen.blit(overlay, (0, BLOCK_SIZE))
+        # Message
+        text = self._create_text(text, 48, text_color, bold=True)
+        overlay_rect = overlay.get_rect()
+        text_center = (overlay_rect.centerx, overlay_rect.centery + BLOCK_SIZE)
+        text_rect = text.get_rect(center=text_center)
+        self.screen.blit(text, text_rect)
 
     def _create_text(self, text, size, color, bold=False, italic=False):
         """Creates a text object with the given properties."""
