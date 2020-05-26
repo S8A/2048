@@ -1,6 +1,7 @@
-import pygame as pg
 import time
 import sys
+import pygame as pg
+from pygame.locals import *
 from .board import GameBoard
 
 
@@ -47,8 +48,20 @@ class GameApp:
     
     def on_event(self, event):
         """Handles events."""
+        still_playing = not self.game.won() and not self.game.lost()
         if event.type == pg.QUIT:
             self._running = False
+        if event.type == pg.KEYDOWN and still_playing:
+            if event.key == K_LEFT:
+                self.game.shift_left()
+            elif event.key == K_RIGHT:
+                self.game.shift_right()
+            elif event.key == K_UP:
+                self.game.shift_up()
+            elif event.key == K_DOWN:
+                self.game.shift_down()
+            elif event.key == K_u:
+                self.game.undo()
     
     def execute(self):
         """Executes the game loop."""
